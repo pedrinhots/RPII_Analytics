@@ -1,0 +1,30 @@
+﻿coluna;descricao
+registros_lgbt;"Registros (denúncia x vítima) LGBT do Disque 100 no município e ano; 0 se nenhum"
+registros_trans;"Registros com vítima travesti/transexual/transgênero; vazio em 2021 (não identificável)"
+registros_lgbt_janela_trans;Registros LGBT feitos em períodos em que a vítima trans era identificável (denominador de prop_trans)
+prop_trans;"registros_trans / registros_lgbt_janela_trans; vazio se não houve registro"
+taxa_lgbt_100mil;Registros LGBT por 100 mil habitantes
+cobertura_trans;"Fração do ano com identificação de vítima trans: 1; 0,5 em 2020 (jan-jun); 0 em 2021"
+populacao;"População: estimativas IBGE (SIDRA 6579) 2011-2021; Censo 2022 (SIDRA 4714)"
+densidade;"hab/km²; interpolação linear entre 2010 (pop. Censo 2010 / área 2022) e 2022 (SIDRA 4714)"
+pib_per_capita_r2022;PIB per capita (SIDRA 5938 / população), em R$ de jul/2022 pelo IPCA
+renda_pc_r2022;Renda domiciliar per capita (SIDRA 3578 em 2010, 10295 em 2022) em R$ de 2022, interpolada
+idhm_2010;IDHM 2010 (Atlas Brasil), fixo no período
+gini_2010;Índice de Gini 2010 (Atlas Brasil), fixo no período
+pct_15_29;% da população com 15 a 29 anos (SIDRA 9606), interpolado 2010-2022
+pct_pretos_pardos;% de pretos e pardos (SIDRA 9605), interpolado 2010-2022
+pct_casais_mesmo_sexo_2022;% de domicílios com casal do mesmo sexo (SIDRA 9881, Censo 2022), fixo
+homicidios;"Homicídios registrados (Ipea, Atlas da Violência, série 328); 0 se o município não aparece"
+taxa_homicidios_100mil;Homicídios por 100 mil habitantes
+munic_*;Variáveis da MUNIC (1 = Sim): edição 2014 para 2011-2018 e edição 2019 para 2019-2022
+munic_indice_lgbt;Soma de tema LGBT + nome social + conselho LGBT + programa LGBT (0 a 4)
+processo_transexualizador;1 se o município teve ao menos 1 procedimento do Processo Transexualizador no ano (SIA/SIH-SUS)
+procedimentos_pt;"Procedimentos do Processo Transexualizador no município e ano (SIA/SIH-SUS); 0 se nenhum"
+pos_stf;1 nos anos completos após a decisão do STF (2020-2022)
+ano_stf_parcial;1 em 2019 (decisão em 13/06/2019)
+pandemia;1 em 2020 e 2021
+offset_log_pop;log(população): termo de exposição (offset) dos modelos de contagem
+z_log_*;log(1+x) padronizado (média 0, desvio 1)
+z_*;variável padronizada (média 0, desvio 1)
+regiao_*;one-hot da região (referência: Sudeste)
+uf_*;one-hot da UF

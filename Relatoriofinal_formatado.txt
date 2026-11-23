@@ -1,0 +1,110 @@
+\documentclass[12pt]{article}
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{float}
+\usepackage{array}
+
+\sloppy
+
+\title{Predição de criminalidade contra pessoas trans e travestis: \\ Relação entre notificações de violência e indicadores municipais no Brasil}
+
+\author{Ana Queiroz da Silva, Natália Metolina, Pedro Henrique Teixeira Soares}
+
+\address{Escola de Artes, Ciências e Humanidades -- Universidade de São Paulo (USP)\\
+Rua Arlindo Bétio nº 1000 -- São Paulo -- SP -- Brasil}
+
+  
+\begin{document}
+
+\maketitle
+     
+\begin{resumo} 
+ atualizar
+ 
+\textbf{palavras-chave:} violência contra população trans; pessoas trans e travestis no Brasil; SINAN; machine learning.
+\end{resumo}
+
+
+\section{Introdução}
+
+A produção de dados referentes à população trans no Brasil é um desafio persistente e uma limitação para a elaboração de políticas públicas. Os Censos elaborados pelo Intituto de Geografia e Estatística (IBGE) não apresentam dados especializados referentes à identidade de gênero. A população transgênera é definida como o conjunto de pessoas que se identificam com um gênero incongruente ou diferente daquele que lhes foi atribuído ao nascer e estima-se que representam entre 0.1\% a 2\% da população brasileira, a depender da localidade. Estima-se que o total da população transgênera no Brasil se distribua da seguinte forma: Norte 8\%, Nordeste 26\%, Centro-Oeste 7\%, Sudeste 44\% e Sul 15\ \cite{spizziri_eufrasio_lima:2021}. Travestis  são uma identidade de gênero revindicada na América Latina, reunindo pessoas designadas como do sexo masculino ao nascer, mas que se identificam com o feminino, embora não necessariamente se identifiquem como mulheres \cite{leal_silva_lizzi:2026}. Para fins de pesquisa abarcaremos as categorias "transgênero", "travesti" e "transexual", esta última presente em bases de dados e documentos oficiais dos programas de saúde públicos, atendendo as diversas fontes utilizadas no trabalho.
+
+A violência é um fenômeno complexo e polissêmico, sendo delimitado neste trabalho às definições presentes na Classificação Internacional de Doenças, caracterizando-se pelo uso intencional da força ou poder que possa ocasionar lesão, morte, privação, deficiência ou dano psicológico \cite{marinho_tomazelli_firianelli:2024}. Em 2011 a notificação de violência autoprovocada e interpessoal integrou a lista de notificação compulsória e foi incluída no Sistema de Informação de Agravos de Notificação (Sinan) e em 2014, para contemplar a Política Nacional de Saúde Integral de Lésbicas, Gays, Bissexuais, Travestis e Transexuais, foram incluídas na ficha de notificação as variáveis “orientação sexual”, “identidade de gênero” e "nome social". Em 2019, o Supremo Tribunal Federal (STF) incluiu a transfobia nos crimes previstos na Lei do Racismo (Lei nº 7.716/1989). Dados produzidos e organizados por associações e ongs nacionais e internacionais indicam o Brasil como líder nos indices de violência e mortalidade por crimes violentos decorrentes da transfobia. O Sinan e o DATASUS tornaram-se as principais fontes de dados para as análises, as bases, no entanto, enfrentam um cenário de subnotificação e dificuldade de desagregação da população trans do conjunto da população LGBT+, não representando com fidelidade a realidade da violência contra trans e travestis no Brasil.
+
+As políticas nacionais de saúde voltadas especificamente para a população trans, que exercem um papel fundamental no acolhimento institucional, começaram a ser estruturadas e ampliadas de forma mais consistente nas últimas décadas, tendo como marcos fundamentais o Processo Transexualizador, formalizado em 2008, a Política Nacional de Saúde Integral LGBT, instituída em 2011, e a portaria do Ministério da Saúde de 2009, que assegura o direito ao uso do nome social em atendimentos prestados na rede pública de saúde, conquista esta que posteriormente foi convertida em decreto federal no ano de 2016. O Processo Transexualizador, no entanto, ainda é um programa com pouca distribuição pelo território nacional, tendo atualmente 26 municípios no país, em sua maioria grandes centros urbanos, concentrando-se principalmente nas regiões Sudeste e Sul, seguidos do Nordeste.
+
+A partir deste cenário de produção de dados sobre a população trans e o desafio da elaboração de políticas públicas o trabalho busca investigar fatores associados a notificações, uma vez que os resultados das bases SINAN e DATASUS não representam com fidelidade a violência transfóbica no país, bem como o efeito da inclusão da transfobia na Lei do Racismo pelo STF, em 2019. O reforço desses fatores poderão oferecer uma maior notificação da violência e como consequência tornar as bases de dados mais consistentes para a elaboração de políticas de prevenção de crimes que vitimam a população trans.
+
+
+\section{Trabalhos Correlatos}
+
+Os estudos a respeito da violência contra a população tran no Brasil concentram-se em estudos ecológicos observacionais com análise espaço-temporal por modelos lineares generalizados (2015-2023) \cite{leal_silva_lizzi:2026} e epidemiológicos (2015-2022) através de regressão linear generalizada baseada em notificações disponibilizados pelo Sistema de Informação de Agravos de Notificação (Sinan) \cite{marinho_tomazelli_firianelli:2024}. O pareamento entre notificações de violência contra pessoas transgêneras e a mortalidade desta população por causas violentas (2014-2022) apresentou um importante panorama referente à reincidência de crimes e à violência autoprovocada, identificando fatores de risco \cite{luis:2025}. O estudo transversal de Luis et al. (2024) apresenta um ganho de consistência nos resultados ao normalizar as bases de dados do Sistema de Informação de Agravos de Notificação (Sinan) e do Sistema de Informações sobre Mortalidade (SIM) através da identificação de nomes das vítimas obtidos por meio de solicitação àSecretaria de Vigilância em Saúde e Ambiente, com assinatura dos autores do estudo do registro de responsabilidade e confidencialidade. 
+
+Os trabalhos citados indicam a mesma conclusão geral: as notificações ainda não representam a realidade da violência contra transgêneros no Brasil devido à subnotificação e à dificuldade de desagregação da população trans do conjunto dos dados sobre a população LGBT+ disponibilizados na bases institucionais. O crescimento do número de municípios com notificações, no entanto, indicam um aumento da visibilidade e enfrentamento à violência contra este recorte da população. Aproximando os resultados dos três estudos, as notificações de violência contra a população trans corresponde aproximadamente a 1.4\% do total de notificações no Sinan. Em relação às notificações contra a população trans a concentração de vítimas foram mulheres (65.3\%), jovens entre 19 a 29 anos (36.1\%) e negras (
+
+\begin{table}[H]
+\centering
+\caption{Comparativo entre abordagens da literatura e este trabalho}
+{\renewcommand{\arraystretch}{1.5}
+
+\begin{tabular}{p{3.2cm} p{3.2cm} p{3.2cm} p{3.2cm}}\\
+\hline
+\textbf{Referência} & \textbf{Método} & \textbf{Dados Utilizados} & \textbf{Contribuição deste trabalho}\\ 
+\hline
+
+Leal, G.C. et al. (2026) & Modelagem Bayesiana Hierárquica (regressão de Poisson) e Aproximações de Laplace Aninhadas Integradas (INLA) & Sinan & Análise espaço-temporal das notificações de violência contra a população trans entre 2015 a 2023
+\\
+Luis, M.A. et al. (2024) & Modelo de Poisson, & Sinan e SIM & Identificar os fatores associados à mortalidade de pessoas trans por causas violentas entre 2014 e 2022
+\\
+Marinho, K.R.E. et al. (2024) & Estudo epidemiológico e método de Prais-Winsten & Sinan & Análise da tendência temporal e características das notificações de violência contra a população trans entre 2015 a 2022 
+\\ 
+Coelho, M.M.F. et al. (2025) & Prophet e Random Forest & Sinan e IBGE & Análise temporal e projeção da violência contra a mulher de 2013 a 2033
+\\
+Lucca, R. e Romero, R. (2026) & Random Forest e LightGBM & Sinan & Analisar tipos de violência contra a mulher entre 2018 e 2024 
+
+\end{tabular}
+}
+\label{tab:referencia}
+\end{table}
+
+
+\section{Método}
+
+
+\subsection{Coleta de dados}
+
+[citar as bases e variáveis do Sinan e do Ibge que forem usados]
+
+\subsection{Limpeza e Normalização dos Dados}
+
+[falar tudo que foi feito pra limpar dados e normalizar]
+
+
+\subsection{Análise Estatística das Notificações de Violência e Correlação entre Variáveis}
+
+[falar que algoritmos foram usados]
+
+
+\section{Resultados}
+
+[falar do que a base Sinan normalizada mostrou]
+[falar do resultado dos algoritmos juntando Sinan e IBGE]
+
+[OBS: fonte de dados e variáveis vão na parte de método]
+
+\subsection{Efeitos da Inclusão da Transfobia na Lei do Racismo}
+
+O Supremo Tribunal Federal (STF) incluiu a transfobia (e a homofobia) nos crimes previstos na Lei do Racismo (Lei nº 7.716/1989) em 13 de junho de 2019.
+
+[ver se a partir dessa data teve alguma alteração, tbm levando em conta que teve pandemia no meio]
+
+\section{Conclusão}
+
+[Concluir fatores que levam pessoas a denunciar e os profisionais receberem a denuncia, responder se a inclusão da transfobia na lei sobre racismo afetou o numero de notificações]
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}

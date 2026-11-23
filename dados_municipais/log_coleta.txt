@@ -1,0 +1,20 @@
+1/6 Lista de municípios (API de localidades do IBGE)
+  5571 municípios
+2/6 Painel anual: população (SIDRA 6579 + Censo 2022 / 4714) e PIB (SIDRA 5938)
+3/6 Homicídios registrados por município (Ipea, Atlas da Violência, série 328)
+  painel: (66852, 8)
+4/6 Indicadores dos Censos 2010 e 2022 (SIDRA)
+  censo: (5571, 24); ausentes por coluna (%):
+  pop_parda_2010            0.1
+  pop_preta_2010            0.1
+  pop_total_2010            0.1
+  pct_pretos_pardos_2010    0.1
+  pct_15_29_2010            0.1
+  renda_pc_2010             0.1
+5/6 MUNIC (Direitos Humanos) e Atlas Brasil (IDHM, Gini 2010)
+  ok: MUNIC_2014.zip (15.5 MB)
+  ok: MUNIC_2019.xlsx (24.8 MB)
+  ok: MUNIC_2023.xlsx (23.3 MB)
+  ok: atlas_censo_1991_2010.xlsx (27.1 MB)
+  ok: atlas_metadados.xlsx (0.0 MB)
+6/6 Concluído em 1.9 min. Arquivos em: C:\Users\pedro\OneDrive\Desktop\RP_Analytics\dados_municipais

@@ -1,0 +1,23 @@
+﻿coluna;descricao
+id_registro;Identificador do registro (denúncia x vítima) criado na limpeza
+hash;Identificador da denúncia no Disque 100 (só 2020 jul em diante)
+layout;Formato de origem: A_2011_2019, B_2020_s1, C_2020s2_2022
+data_cadastro;Data/hora de cadastro da denúncia
+pos_stf;1 se cadastrada a partir de 13/06/2019 (decisão do STF, ADO 26)
+pandemia;1 se cadastrada entre mar/2020 e dez/2021
+cod_mun_ibge6;Código IBGE do município da vítima, 6 dígitos (sem verificador)
+fonte_municipio;De onde veio o município: da vítima ou do local da denúncia (2020 s1)
+trans_identificavel;1 se o layout do período permite identificar vítima trans (0 = jul/2020 a dez/2021)
+identidade_trans;travesti / transexual / transgenero / intersexo / nao_trans / desconhecido
+is_trans;"1 = vítima trans ou travesti; 0 = não; vazio = não identificável ou não informado"
+orientacao_sexual;homossexual / bissexual / heterossexual / outra / desconhecido
+sexo_genero_vitima;masculino / feminino / desconhecido (sexo ou gênero binário informado)
+faixa_etaria;0-17, 18-24, 25-29, 30-39, 40-49, 50-59, 60+ (pelo limite inferior da faixa original)
+raca_cor;branca / preta / parda / amarela / indigena / desconhecido
+cenario;Local da violação agrupado em macro-categorias
+relacao_suspeito;Relação do suspeito com a vítima, agrupada
+denunciante;propria_vitima / terceiro / anonimo / outro (nao_coletado antes de 2020)
+canal;telefone / mensageiro / internet_app / outro (nao_coletado antes de 2020)
+viol_*;1 se a denúncia contém ao menos uma violação daquela macro-categoria (multi-hot)
+n_tipos_violacao;Quantas macro-categorias de violação a denúncia contém
+n_linhas_origem;Quantas linhas da base original foram colapsadas neste registro

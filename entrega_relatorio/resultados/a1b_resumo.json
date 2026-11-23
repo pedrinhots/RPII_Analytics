@@ -1,0 +1,198 @@
+{
+ "curvas": [
+  {
+   "ano_previsto": 2016,
+   "rodada_escolhida": 155.0,
+   "queda_val_ate_parada_%": 5.016,
+   "queda_treino_ate_1500_%": 23.62,
+   "val_1500_vs_parada_%": 11.145
+  },
+  {
+   "ano_previsto": 2017,
+   "rodada_escolhida": 130.0,
+   "queda_val_ate_parada_%": 4.87,
+   "queda_treino_ate_1500_%": 22.638,
+   "val_1500_vs_parada_%": 7.242
+  },
+  {
+   "ano_previsto": 2018,
+   "rodada_escolhida": 139.0,
+   "queda_val_ate_parada_%": 3.956,
+   "queda_treino_ate_1500_%": 21.486,
+   "val_1500_vs_parada_%": 6.651
+  },
+  {
+   "ano_previsto": 2019,
+   "rodada_escolhida": 352.0,
+   "queda_val_ate_parada_%": 6.595,
+   "queda_treino_ate_1500_%": 20.157,
+   "val_1500_vs_parada_%": 2.572
+  },
+  {
+   "ano_previsto": 2020,
+   "rodada_escolhida": 131.0,
+   "queda_val_ate_parada_%": 3.33,
+   "queda_treino_ate_1500_%": 19.44,
+   "val_1500_vs_parada_%": 4.244
+  },
+  {
+   "ano_previsto": 2021,
+   "rodada_escolhida": 942.0,
+   "queda_val_ate_parada_%": 11.479,
+   "queda_treino_ate_1500_%": 19.27,
+   "val_1500_vs_parada_%": 0.108
+  },
+  {
+   "ano_previsto": 2022,
+   "rodada_escolhida": 757.0,
+   "queda_val_ate_parada_%": 11.025,
+   "queda_treino_ate_1500_%": 19.291,
+   "val_1500_vs_parada_%": -0.123
+  }
+ ],
+ "ablacao": [
+  {
+   "conjunto": "Só estrutura",
+   "n_variaveis": 19.0,
+   "ganho_vs_pop_pct": 14.033,
+   "ap_onda": 0.219,
+   "prec20_onda": 0.393
+  },
+  {
+   "conjunto": "Só histórico da cidade",
+   "n_variaveis": 4.0,
+   "ganho_vs_pop_pct": 14.053,
+   "ap_onda": 0.211,
+   "prec20_onda": 0.35
+  },
+  {
+   "conjunto": "Estrutura + histórico",
+   "n_variaveis": 23.0,
+   "ganho_vs_pop_pct": 16.716,
+   "ap_onda": 0.222,
+   "prec20_onda": 0.35
+  },
+  {
+   "conjunto": "Completo (+ vizinhos)",
+   "n_variaveis": 24.0,
+   "ganho_vs_pop_pct": 16.864,
+   "ap_onda": 0.224,
+   "prec20_onda": 0.371
+  }
+ ],
+ "bootstrap": [
+  {
+   "comparacao": "LightGBM vs só população",
+   "ganho_pct": 16.691,
+   "ic95_inf": 13.334,
+   "ic95_sup": 20.308,
+   "p_ganho_menor_ou_igual_0": 0.0
+  },
+  {
+   "comparacao": "Endêmico-epidêmico vs só população",
+   "ganho_pct": 14.601,
+   "ic95_inf": 11.019,
+   "ic95_sup": 18.742,
+   "p_ganho_menor_ou_igual_0": 0.0
+  },
+  {
+   "comparacao": "Extra Trees vs só população",
+   "ganho_pct": 11.313,
+   "ic95_inf": 6.918,
+   "ic95_sup": 15.208,
+   "p_ganho_menor_ou_igual_0": 0.0
+  },
+  {
+   "comparacao": "LightGBM vs Endêmico-epidêmico (pontos percentuais)",
+   "ganho_pct": 2.09,
+   "ic95_inf": 0.116,
+   "ic95_sup": 4.216,
+   "p_ganho_menor_ou_igual_0": 0.018
+  }
+ ],
+ "anos_em_que_supera_populacao": {
+  "LightGBM (Tweedie)": 7,
+  "Endêmico-epidêmico (BN)": 7,
+  "Extra Trees": 7
+ },
+ "anos_LGBM_melhor_que_EE": 6,
+ "calibracao_total": {
+  "LightGBM": 0.9626788093574714,
+  "Endêmico-epidêmico": 1.0972403456512911,
+  "Extra Trees": 1.051755469050723,
+  "Só população": 1.0
+ },
+ "captura_1pct": {
+  "Endêmico-epidêmico": 27.1,
+  "LightGBM": 30.7,
+  "Só população": 21.7
+ },
+ "captura_5pct": {
+  "Endêmico-epidêmico": 66.6,
+  "LightGBM": 69.0,
+  "Só população": 62.3
+ },
+ "captura_10pct": {
+  "Endêmico-epidêmico": 81.9,
+  "LightGBM": 81.0,
+  "Só população": 79.2
+ },
+ "total_ondas_2016_2022": 332,
+ "sensibilidade": [
+  {
+   "variante": "configuração usada",
+   "ganho_medio_pct": 16.86,
+   "ganho_min_pct": 7.54,
+   "ganho_max_pct": 24.83
+  },
+  {
+   "variante": "folhas = 7",
+   "ganho_medio_pct": 16.19,
+   "ganho_min_pct": 7.13,
+   "ganho_max_pct": 24.74
+  },
+  {
+   "variante": "folhas = 31",
+   "ganho_medio_pct": 16.77,
+   "ganho_min_pct": 7.62,
+   "ganho_max_pct": 26.42
+  },
+  {
+   "variante": "taxa de aprendizado = 0,1",
+   "ganho_medio_pct": 15.86,
+   "ganho_min_pct": 6.88,
+   "ganho_max_pct": 23.13
+  },
+  {
+   "variante": "mínimo por folha = 20",
+   "ganho_medio_pct": 16.41,
+   "ganho_min_pct": 6.55,
+   "ganho_max_pct": 26.17
+  },
+  {
+   "variante": "mínimo por folha = 150",
+   "ganho_medio_pct": 17.26,
+   "ganho_min_pct": 7.6,
+   "ganho_max_pct": 26.06
+  },
+  {
+   "variante": "potência Tweedie = 1,2",
+   "ganho_medio_pct": 16.74,
+   "ganho_min_pct": 5.92,
+   "ganho_max_pct": 24.6
+  },
+  {
+   "variante": "potência Tweedie = 1,5",
+   "ganho_medio_pct": 15.71,
+   "ganho_min_pct": 6.2,
+   "ganho_max_pct": 27.71
+  },
+  {
+   "variante": "todas as variáveis e linhas",
+   "ganho_medio_pct": 15.79,
+   "ganho_min_pct": 6.3,
+   "ganho_max_pct": 25.04
+  }
+ ],
+ "tempo_total_s": 253.5
+}

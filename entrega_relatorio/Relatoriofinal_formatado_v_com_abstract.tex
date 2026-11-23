@@ -1,0 +1,337 @@
+\documentclass[12pt]{article}
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[section]{placeins}
+\usepackage{amsmath,amssymb}
+
+\sloppy
+
+\title{Predição de ondas de denúncias de violência contra pessoas LGBT, trans e travestis: \\ relação com indicadores municipais no Brasil}
+
+\author{Ana Queiroz da Silva, Natália Metolina, Pedro Henrique Teixeira Soares}
+
+\address{Escola de Artes, Ciências e Humanidades -- Universidade de São Paulo (USP)\\
+Rua Arlindo Bétio nº 1000 -- São Paulo -- SP -- Brasil}
+
+  
+\begin{document}
+
+\maketitle
+     
+\begin{abstract}
+To give visibility to violence against transgender people and \textit{travestis}, this work combines 27,441 reports of violence against LGBT people made to the Disque 100 hotline (2011--2022) with municipal indicators to identify municipalities with alarming numbers and to predict waves of reports. After accounting for population size, 141 municipalities were alarming in 2020--2022, 83 of them with fewer than 100,000 inhabitants. In one-year-ahead forecasts, LightGBM reduced the error by 16.7\% (95\% CI: 13.3--20.3) relative to a population-only allocation and, monitoring 1\% of municipalities, captured 31\% of the waves. Reports were more frequent where there are more same-sex couples, higher density and a municipal human rights ombudsman, and waves did not spread to neighbouring cities. Transgender victims accounted for 18\% of reports with recorded identity and suffered more severe and public violence. The effect of the 2019 Supreme Court decision could not be measured, as recording changes dominated the series.
+\end{abstract}
+
+\begin{resumo}
+Para dar visibilidade à violência contra pessoas trans e travestis, este trabalho combina 27.441 denúncias de violência contra pessoas LGBT feitas ao Disque 100 (2011--2022) com indicadores municipais para identificar municípios com números alarmantes e prever ondas de denúncias. Descontado o porte, 141 municípios foram alarmantes em 2020--2022, 83 deles com menos de 100 mil habitantes. Na previsão de um ano à frente, o LightGBM reduziu o erro em 16,7\% (IC 95\%: 13,3--20,3) em relação à distribuição pela população e, monitorando 1\% dos municípios, reuniu 31\% das ondas. Houve mais denúncias onde há mais casais do mesmo sexo, maior densidade e ouvidoria de direitos humanos, e as ondas não se espalharam para cidades vizinhas. As vítimas trans foram 18\% das denúncias com identidade registrada e sofreram violência mais grave e pública. Não foi possível medir o efeito da decisão do STF de 2019, pois mudanças no registro dominaram a série.
+
+\textbf{Palavras-chave:} violência contra população trans; pessoas trans e travestis no Brasil; Disque 100; previsão espaço-temporal; aprendizado de máquina.
+\end{resumo}
+
+
+\section{Introdução}
+\label{sec:introducao}
+
+O Brasil é o país com o maior número de pessoas trans assassinadas, sobretudo travestis e mulheres trans \cite{marinho_tomazelli_firianelli:2024}. Ainda assim, essa violência é pouco visível nos dados oficiais. Os Censos do Instituto Brasileiro de Geografia e Estatística (IBGE) não registram identidade de gênero, e estima-se que pessoas trans sejam de 0,1\% a 2\% da população, distribuídas entre Norte (8\%), Nordeste (26\%), Centro-Oeste (7\%), Sudeste (44\%) e Sul (15\%) \cite{spizziri_eufrasio_lima:2021}. Pessoas trans são as que se identificam com um gênero diferente daquele atribuído ao nascer; travestis são uma identidade latino-americana de pessoas designadas como do sexo masculino ao nascer que se identificam com o feminino, sem necessariamente se identificarem como mulheres \cite{leal_silva_lizzi:2026}. Este trabalho abarca as categorias ``transgênero'', ``travesti'' e ``transexual'', esta última presente em bases e documentos oficiais.
+
+A violência, entendida como o uso intencional da força ou do poder que possa causar lesão, morte, privação ou dano psicológico \cite{marinho_tomazelli_firianelli:2024}, é registrada em bases que raramente separam a população trans do conjunto LGBT. No Sinan, a notificação de violência interpessoal e autoprovocada tornou-se compulsória em 2011, e os campos ``orientação sexual'', ``identidade de gênero'' e ``nome social'' entraram na ficha em 2014. Uma fonte menos explorada é o Disque Direitos Humanos (Disque 100), que recebe denúncias feitas pela própria vítima ou por terceiros e mantém desde 2011 um recorte para a população LGBT. Diferente do Sinan, que registra casos atendidos na saúde, ele também capta violências que raramente geram atendimento, como a discriminação e a violência psicológica. Em 2019, o Supremo Tribunal Federal (STF) incluiu a transfobia nos crimes da Lei do Racismo (Lei nº 7.716/1989). As políticas de saúde também avançaram, com o Processo Transexualizador (2008), a Política Nacional de Saúde Integral LGBT (2011) e o direito ao nome social no SUS, mas o Processo Transexualizador está presente em apenas 26 municípios, concentrados no Sudeste e no Sul.
+
+Saber onde as denúncias são desproporcionalmente altas é um primeiro passo para dar visibilidade a essa violência e direcionar a atenção pública. Este trabalho responde à pergunta: \textit{é possível, com indicadores municipais e o histórico de denúncias, identificar e antecipar os municípios onde a violência contra pessoas LGBT, e em especial contra pessoas trans e travestis, é denunciada acima do esperado?} Ela se desdobra em quatro perguntas: (i) onde estão e como se agrupam os municípios alarmantes; (ii) se é possível prever ondas de denúncias e qual modelo o faz melhor; (iii) se a violência contra pessoas trans difere da violência contra as demais pessoas LGBT; e (iv) se a decisão do STF alterou o número de denúncias.
+
+A previsão é feita sobre o total de denúncias LGBT, e não só sobre as de vítimas trans, por uma limitação dos dados: o Disque 100 não registrou a identidade trans entre julho de 2020 e junho de 2022, e há apenas 4.406 denúncias com vítima trans identificada, número insuficiente para prever município a município. A violência contra pessoas trans é analisada pela sua proporção entre as denúncias LGBT e pelo seu perfil, sempre em comparação com o total da comunidade.
+
+As contribuições são quatro. Primeiro, a unificação dos três formatos de registro do Disque 100 entre 2011 e 2022 num painel de 5.565 municípios, combinado a indicadores do IBGE, da MUNIC e do SUS. Segundo, a identificação dos municípios com denúncias acima do esperado e de seus aglomerados, descontados o porte e o acaso. Terceiro, a comparação entre um modelo estatístico de vigilância de surtos e dois modelos de aprendizado de máquina na previsão de um ano à frente, avaliados em anos que não viram. Quarto, a comparação entre vítimas trans e as demais vítimas LGBT e a avaliação da decisão do STF, considerando as mudanças no registro.
+
+A resposta à pergunta central é positiva: o LightGBM foi o melhor modelo e, acompanhando apenas 1\% dos municípios, reúne quase um terço das ondas, e as denúncias se concentram onde a população LGBT é mais visível e há canais institucionais para denunciar. A violência contra pessoas trans é mais grave e mais pública, e as mudanças administrativas no Disque 100 impedem medir o efeito da decisão do STF. As seções seguintes apresentam os trabalhos correlatos (Seção~\ref{sec:correlatos}), a metodologia (Seção~\ref{sec:metodologia}), os resultados e sua discussão (Seção~\ref{sec:resultados}) e a conclusão (Seção~\ref{sec:conclusao}).
+
+
+\section{Trabalhos Correlatos}
+\label{sec:correlatos}
+
+\subsection{Violência contra pessoas trans nas bases do SUS}
+
+Leal et al. \cite{leal_silva_lizzi:2026} analisaram 45.715 notificações de violência contra pessoas trans no Sinan entre 2015 e 2023, com um modelo bayesiano hierárquico espaço-temporal de Poisson ajustado por INLA, tendo as 27 unidades da federação como unidade de análise. As vítimas eram sobretudo mulheres trans (65,3\%), jovens de 19 a 29 anos (36,1\%) e pardas (44,6\%), e a violência física foi a mais frequente (65,9\%). A taxa bruta de notificação subiu de 74,3 para 214,0 por 100 mil pessoas trans estimadas entre 2015 e 2023, com as maiores taxas no Sudeste e no Sul, incluindo Minas Gerais, e a autocorrelação espacial só foi significativa em 2023. O estudo mostra que a violência notificada não se distribui ao acaso no território, mas não desce ao nível municipal nem faz previsão.
+
+Marinho Neto et al. \cite{marinho_tomazelli_firianelli:2024} estudaram as notificações de violência autoprovocada e interpessoal contra pessoas trans de 20 a 59 anos no Sinan, de 2015 a 2022, com o método de Prais-Winsten. As notificações trans foram 1,7\% do total e caíram no período, enquanto cresceram o número de municípios notificantes (45,8\%) e as violências autoprovocada e sexual. Os agressores eram majoritariamente homens com vínculo afetivo com a vítima, sobretudo no caso das mulheres trans (43,4\%). A análise descreve a tendência nacional, sem relacionar as notificações às características dos municípios.
+
+Luis et al. \cite{luis:2025} parearam as notificações de violência contra pessoas trans no Sinan com os óbitos do Sistema de Informações sobre Mortalidade (SIM) de 2014 a 2022. Das 36.452 notificações, o pareamento recuperou 1.325 óbitos, dos quais 563 (42,5\%) por causas violentas. Um modelo de Poisson mostrou maior prevalência de morte violenta entre os mais jovens (razão de prevalência de 4,29 entre 10 e 14 anos), com registro de lesão autoprovocada (1,50), com agressão por arma de fogo (2,00) e quando o óbito ocorreu menos de seis meses após a notificação (2,07). O trabalho liga violência notificada e morte, mas no nível individual e com acesso a dados identificados.
+
+Em conjunto, esses estudos indicam que as notificações ainda não representam a realidade da violência contra pessoas trans, pela subnotificação e pela dificuldade de separar essa população do conjunto LGBT, mas que o aumento de municípios notificantes amplia a visibilidade do problema.
+
+\subsection{Aprendizado de máquina em notificações de violência}
+
+Coelho et al. \cite{coelho_jiv:2025} usaram Prophet e Random Forest sobre 2.635.514 notificações de violência contra a mulher no Sinan (2013--2023), combinadas a dados do IBGE, e projetaram, a partir de um crescimento médio de 2,26\% ao ano, um aumento de cerca de 95\% até 2033. Lucca e Romero \cite{lucca_romero_sbbd:2026} compararam regressão logística regularizada, Random Forest e LightGBM em 2,22 milhões de notificações de violência contra a mulher (2018--2024), com divisão temporal entre treino e teste, para distinguir violência física, psicológica e sexual. Os modelos não lineares acrescentaram pouco ao linear, o balanceamento de classes prejudicou a calibração das probabilidades e 44,9\% dos casos de violência psicológica não foram identificados, o que os autores associam à subnotificação presente na própria base. Esses trabalhos mostram que algoritmos baseados em árvores de decisão extraem padrões de bases administrativas de violência, mas tratam o país como um todo ou classificam casos individuais, sem prever onde os casos vão se concentrar, e não foram aplicados à população LGBT (Tabela~\ref{tab:referencia}).
+
+\begin{table}[!htb]
+\centering
+\caption{Síntese dos trabalhos correlatos e deste trabalho}
+\label{tab:referencia}
+{\renewcommand{\arraystretch}{1.15}\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{3.1cm} >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{4.4cm}}
+\toprule
+\textbf{Trabalho} & \textbf{Dados e período} & \textbf{Método} & \textbf{Resultado relevante} \\
+\midrule
+Leal et al. \cite{leal_silva_lizzi:2026} & Sinan, 2015--2023, 27 UFs & Bayesiano hierárquico (INLA) & Violência não aleatória no território; maiores taxas no Sudeste e no Sul \\
+\addlinespace
+Marinho Neto et al. \cite{marinho_tomazelli_firianelli:2024} & Sinan, 2015--2022 & Prais-Winsten & Trans são 1,7\% das notificações; aumento das violências sexual e autoprovocada \\
+\addlinespace
+Luis et al. \cite{luis:2025} & Sinan e SIM, 2014--2022 & Pareamento e Poisson & 42,5\% dos óbitos pareados por causa violenta; risco maior entre jovens \\
+\addlinespace
+Coelho et al. \cite{coelho_jiv:2025} & Sinan e IBGE, 2013--2023 (mulheres) & Prophet e Random Forest & Projeção de cerca de +95\% até 2033 \\
+\addlinespace
+Lucca e Romero \cite{lucca_romero_sbbd:2026} & Sinan, 2018--2024 (mulheres) & Logística, Random Forest e LightGBM & Não lineares acrescentam pouco; 44,9\% da violência psicológica não identificada \\
+\midrule
+\textbf{Este trabalho} & Disque 100, IBGE, MUNIC e SUS, 2011--2022, 5.565 municípios & Bayes empírico, Getis-Ord, endêmico-epidêmico, LightGBM, Extra Trees e série interrompida & Municípios alarmantes e previsão de ondas, comparando vítimas trans e LGBT \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Vigilância de surtos aplicada ao território}
+
+Prever onde as denúncias vão se concentrar é um problema parecido com o da vigilância epidemiológica, que acompanha contagens de casos por área e período para perceber surtos cedo. Farrington et al. \cite{farrington:1996} propuseram um algoritmo que compara a contagem de cada período com um limite calculado a partir do histórico e emite um alerta quando ela o ultrapassa, usado na vigilância de doenças infecciosas na Inglaterra e no País de Gales. Held, Höhle e Hofmann \cite{held_hohle_hofmann:2005} levaram essa ideia a várias áreas ao mesmo tempo: no modelo endêmico-epidêmico, os casos esperados de cada área somam uma parte estável, ligada às características do lugar, uma parte que depende dos casos recentes na própria área e outra que depende dos casos nas áreas vizinhas, o que permite testar se um surto se espalha pelo território. Em mapas de áreas pequenas, a suavização bayesiana empírica de Marshall \cite{marshall:1991} evita que municípios pouco populosos apareçam como extremos por acaso, e a estatística de Getis e Ord \cite{getis_ord:1992} localiza aglomerados de valores altos.
+
+Essas ferramentas nasceram para doenças, mas o problema tem a mesma forma: contagens raras, distribuídas de modo desigual entre áreas, que às vezes disparam. Nos trabalhos revisados, elas não foram usadas para denúncias de violência contra pessoas LGBT, e nenhum estudo avaliou com dados de denúncia o efeito da decisão do STF. Este trabalho junta as três vertentes desta seção: leva a lógica da vigilância de surtos à população que os estudos com dados do SUS mostram estar mais exposta e faz a pergunta de previsão que os estudos com aprendizado de máquina ainda não fizeram, comparando modelos estatísticos e de aprendizado de máquina em vez de escolher um deles de antemão.
+
+
+\section{Metodologia}
+\label{sec:metodologia}
+
+Este é um estudo ecológico: para cada um dos 5.565 municípios e cada ano de 2011 a 2022, reunimos as denúncias de violência contra pessoas LGBT e características do município. As quatro análises, cada uma com seu código, servem à mesma pergunta central: \textbf{onde a violência notificada é alarmante e quais cidades tendem a ter ondas de denúncias}.
+
+\subsection{Coleta de dados}
+
+\textbf{Denúncias.} A fonte é o Disque Direitos Humanos (Disque 100), da Ouvidoria Nacional de Direitos Humanos. Usamos as denúncias de janeiro de 2011 a dezembro de 2022 em que a vítima pertence ao grupo ``população LGBTQIA+'' (50.045 linhas). De cada denúncia usamos data, município, perfil da vítima, tipo de violação, local, relação com o agressor e, desde 2020, quem denunciou e por qual canal.
+
+\textbf{Características dos municípios.} Os dados municipais vieram de fontes oficiais, baixados por um script para que a coleta seja reproduzível (Tabela~\ref{tab:fontes}): IBGE, pesquisa MUNIC, Atlas da Violência, Atlas do Desenvolvimento Humano e SUS. A localização de cada município definiu os seus 10 vizinhos mais próximos. As fontes não tiveram o mesmo peso (última coluna): o histórico do Disque 100 foi a informação que mais contribuiu para a previsão, e se destacaram os casais do mesmo sexo, que medem a população LGBT visível de cada cidade, a densidade, a cor ou raça e a ouvidoria de direitos humanos.
+
+\begin{table}[!htb]
+\centering
+\caption{Fontes de dados, variáveis municipais e seu papel nos resultados}
+\label{tab:fontes}
+{\renewcommand{\arraystretch}{1.2}\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{4.4cm} >{\raggedright\arraybackslash}p{3.7cm} >{\raggedright\arraybackslash}p{1.9cm} >{\raggedright\arraybackslash}p{3.3cm}}
+\toprule
+\textbf{Variável} & \textbf{Fonte} & \textbf{Período} & \textbf{Papel nos resultados} \\
+\midrule
+Denúncias contra pessoas LGBT & Disque 100 & 2011--2022 & variável prevista; histórico é o principal preditor \\
+Casais do mesmo sexo; densidade & IBGE, Censo 2022 & 2022 & fatores mais fortes (mais denúncias) \\
+População residente & IBGE & 2011--2022 & base do valor esperado \\
+Cor ou raça; 15 a 29 anos & IBGE, Censos 2010 e 2022 & 2010, 2022 & pretos e pardos: menos denúncias \\
+Políticas de direitos humanos e LGBT & IBGE, MUNIC & 2014, 2019, 2023 & ouvidoria: mais denúncias \\
+PIB, renda, Gini e homicídios & IBGE, Atlas DH, Atlas da Violência & 2010--2022 & sem efeito \\
+Processo Transexualizador & SUS (SIA/SIH) & 2008--2026 & sem efeito \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Limpeza e Normalização dos Dados}
+
+O sistema de registro do Disque 100 mudou três vezes no período (2011--2019, primeiro semestre de 2020 e a partir de julho de 2020), com colunas, categorias e até o significado de uma linha diferentes: no formato mais recente, cada linha é uma violação, e não uma denúncia. Removemos 561 linhas repetidas e agrupamos as linhas da mesma denúncia e vítima, chegando a \textbf{27.441 registros}. Unificamos as colunas equivalentes dos três formatos, reunimos respostas como ``não informado'' na categoria ``desconhecido'' e agrupamos as cerca de 240 descrições de violação em nove tipos. Entre julho de 2020 e junho de 2022 o formulário não permitia registrar a identidade trans; nesse intervalo ela foi tratada como desconhecida, e não como zero. Associamos 97,6\% dos registros ao código do município (2.070 municípios) e montamos o painel de municípios e anos, com zero onde não houve denúncia. Valores em dinheiro foram corrigidos para reais de 2022, dados censitários foram interpolados entre 2010 e 2022, e as sete perguntas comuns às edições da MUNIC formaram um índice de política LGBT de 0 a 4. Por fim, categorias viraram colunas de 0 e 1, e medidas muito desiguais entre municípios, como população e PIB, foram transformadas em logaritmo e padronizadas.
+
+\subsection{Análise Estatística das Notificações de Violência e Correlação entre Variáveis}
+
+Em 91\% das combinações de município e ano não há denúncia, o que exige modelos para contagens com muitos zeros, e o volume nacional varia por razões administrativas do Disque 100. Por isso, tratamos o total do país como dado e modelamos \textit{onde} as denúncias se concentram. Para cada município e ano calculamos um \textbf{valor esperado}: quantas denúncias ele teria se recebesse uma fatia do total nacional proporcional à sua população.
+
+\textbf{Análise 1 --- municípios alarmantes e previsão de ondas.} Dividimos as denúncias observadas pelas esperadas (risco relativo) e usamos a \textbf{suavização bayesiana empírica} \cite{marshall:1991} para que uma única denúncia numa cidade pequena não gere falso alarme; é \textbf{alarmante} o município com mais de 95\% de chance de estar acima do esperado. A estatística de \textbf{Getis-Ord} \cite{getis_ord:1992} identifica aglomerados de municípios alarmantes. Para prever as denúncias do ano seguinte, comparamos três modelos: o \textbf{endêmico-epidêmico} \cite{held_hohle_hofmann:2005}, criado para vigilância de surtos, que separa o volume esperado em parte estrutural, inércia do próprio histórico e propagação a partir dos vizinhos; o \textbf{LightGBM} \cite{ke:2017}, algoritmo de aprendizado de máquina baseado em árvores de decisão; e o \textbf{Extra Trees} \cite{geurts:2006}, da família das florestas aleatórias. Eles foram comparados com três regras simples: distribuir as denúncias só pela população, repetir a fatia histórica da cidade e repetir o ano anterior. Uma \textbf{onda} é um ano com pelo menos 5 denúncias e pelo menos o dobro do esperado, e um município entra em \textbf{alerta} quando supera o limite que o modelo considerava plausível em 95\% dos casos \cite{farrington:1996}. A confiabilidade do LightGBM foi verificada com curvas de aprendizado, \textit{bootstrap}, ablação, variação de parâmetros e valores SHAP.
+
+\textbf{Análises 2 e 3 --- vítimas trans.} Uma \textbf{regressão binomial} mostra quais características do município se associam a uma proporção maior de vítimas trans entre as denúncias LGBT, comparando municípios dentro do mesmo ano. Uma \textbf{regressão logística}, conferida com o LightGBM, mostra quais características da denúncia tornam mais provável que a vítima seja trans (16.467 registros com identidade conhecida).
+
+\textbf{Análise 4 --- decisão do STF.} Uma \textbf{série temporal interrompida} \cite{bernal:2017} compara as denúncias mensais após junho de 2019 com a tendência anterior, descontando pandemia, trocas de sistema e sazonalidade. No \textbf{teste de placebo}, repetimos a análise para cada mês de 2018 e 2019: se outro mês explicar melhor a mudança, ela não pode ser atribuída à decisão.
+
+Os resultados são dados como \textbf{razão de taxas} (RR; 1,20 = 20\% mais denúncias que o esperado) ou \textbf{razão de chances}; se o IC 95\% inclui o 1, não há evidência de efeito. 
+
+\subsection{Protocolo de validação, métricas e reprodução}
+
+A avaliação simula o uso real. Em cada rodada, os modelos aprendem com todos os anos anteriores ao previsto e preveem os 5.565 municípios do ano seguinte, sem nenhum ajuste com o ano de teste (Tabela~\ref{tab:rodadas}). O LightGBM usa perda Tweedie (potência 1,3), própria para contagens com muitos zeros, taxa de aprendizado 0,03, 15 folhas, mínimo de 60 observações por folha e o log do valor esperado como termo fixo; o número de árvores vem da parada antecipada (até 2.000, parando após 100 sem melhora no último ano de treino), e o modelo é então retreinado com todos os anos. O Extra Trees usa 300 árvores, critério de Poisson e mínimo de 20 observações por folha; o endêmico-epidêmico é estimado por máxima verossimilhança. A semente é 42 em todos.
+
+\begin{table}[!htb]
+\centering
+\caption{Rodadas da validação temporal: cada linha treina com os anos anteriores e prevê o ano indicado}
+\label{tab:rodadas}
+{\renewcommand{\arraystretch}{1.0}\footnotesize
+\begin{tabular}{c c r r r r}
+\toprule
+\textbf{Ano previsto} & \textbf{Anos de treino} & \textbf{Obs. de treino} & \textbf{Sem denúncia} & \textbf{Ondas} & \textbf{Árvores} \\
+\midrule
+2016 & 2012--2015 & 22.260 & 92,7\% & 56 & 155 \\
+2017 & 2012--2016 & 27.825 & 91,3\% & 59 & 130 \\
+2018 & 2012--2017 & 33.390 & 92,5\% & 42 & 139 \\
+2019 & 2012--2018 & 38.955 & 94,2\% & 42 & 352 \\
+2020 & 2012--2019 & 44.520 & 93,4\% & 50 & 131 \\
+2021 & 2012--2020 & 50.085 & 93,8\% & 31 & 942 \\
+2022 & 2012--2021 & 55.650 & 85,8\% & 52 & 757 \\
+\bottomrule
+\multicolumn{6}{p{12.5cm}}{\footnotesize 5.565 municípios por ano previsto. Sem denúncia: municípios com zero registro. Árvores: escolhidas pela parada antecipada do LightGBM.}
+\end{tabular}}
+\end{table}
+
+A métrica principal é o desvio de Poisson médio, que mede o erro de contagens sem deixar que as grandes cidades dominem a avaliação, como aconteceria com o erro quadrático; o ganho de cada modelo é a redução desse desvio em relação à referência ``só população''. Como as ondas são raras (menos de 1\% dos municípios por ano), elas são avaliadas pela precisão entre as 20 cidades apontadas como mais prováveis e pela precisão média, mais informativas que a acurácia em classes raras \cite{saito_rehmsmeier:2015}. Todas as fontes são baixadas por script e cada análise tem um código próprio, em Python 3.13 com \textit{statsmodels} 0.15, \textit{scikit-learn} 1.9, \textit{LightGBM} 4.7, \textit{SHAP} e \textit{PySAL}; com a semente fixa, repetir a execução reproduz os mesmos resultados.
+
+
+\section{Resultados e Discussão dos Resultados}
+\label{sec:resultados}
+
+\subsection{Panorama das denúncias}
+
+Entre 2011 e 2022, o Disque 100 recebeu 27.441 registros de violência contra pessoas LGBT, vindos de 2.070 municípios (37\% do total). A maioria das vítimas era do gênero masculino (62\%), homossexual (68\%) e jovem (47\% entre 18 e 29 anos); em 28\% dos casos a raça/cor não foi informada. A violência psicológica esteve presente em 79\% dos registros, seguida da discriminação (53\%) e da agressão física (32\%). Desde 2020, 70\% das denúncias foram feitas pela própria vítima, quase todas por telefone.
+
+As grandes variações no total nacional coincidem com mudanças administrativas, e não com mudanças conhecidas na violência (Figura~\ref{fig:serie}): o volume caiu após a troca de sistema em julho de 2020 e se multiplicou por cerca de 4,5 com o novo formulário de julho de 2022. Por isso, as análises olham para a \textit{distribuição} das denúncias entre as cidades, e não para o total do país.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{figuras/fig1_serie_mensal.pdf}
+\caption{Denúncias mensais de violência contra pessoas LGBT (linha contínua azul) e contra vítimas trans (linha tracejada vermelha), 2011--2022. As linhas verticais pontilhadas marcam a decisão do STF e as mudanças no sistema de registro; a faixa cinza, a pandemia. Fonte: Disque 100 (ONDH/MDHC).}
+\label{fig:serie}
+\end{figure}
+
+\subsection{Onde estão os municípios alarmantes?}
+
+Sobretudo fora dos grandes centros, e agrupados em poucas regiões. Muitas denúncias não significam, por si só, alto risco: as 50 cidades com mais registros somam metade do total, mas São Paulo, com o maior número absoluto, fica apenas 31\% acima do esperado para o seu porte. Descontados o tamanho da população e o acaso, \textbf{141 municípios tiveram números alarmantes em 2020--2022}, 83 deles com menos de 100 mil habitantes. Os extremos foram Ubaporanga (MG, quase 30 vezes o esperado), Itaporanga (PB, 25), Cabo Frio (RJ, 17), Barbacena (MG, 10) e Campos dos Goytacazes (RJ, 8). Esses municípios formam \textbf{61 aglomerados de alto risco} na Zona da Mata e no Sul de Minas Gerais, na região metropolitana do Rio de Janeiro, no interior de São Paulo, em Goiás e no entorno de João Pessoa (Figura~\ref{fig:mapa}).
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.62\textwidth]{figuras/fig3_mapa_risco.pdf}
+\caption{Risco relativo suavizado de denúncias por município, 2020--2022. Vermelho: mais denúncias do que o esperado para o porte; azul: menos; branco: o esperado. O contorno preto marca os aglomerados de alto risco (Getis-Ord, $p<0{,}05$). Fonte: Disque 100 e IBGE.}
+\label{fig:mapa}
+\end{figure}
+
+\subsection{É possível prever as ondas?}
+
+Sim. Os três modelos previram melhor do que distribuir as denúncias só pela população, e as regras simples foram piores (Tabela~\ref{tab:validacao}). O LightGBM teve o melhor resultado, com erro 16,7\% menor que a referência, seguido pelo modelo endêmico-epidêmico (14,6\%). Repetir o ano anterior foi a pior estratégia: o número de denúncias de uma cidade varia muito de um ano para o outro, e o passado só ajuda combinado com as características do município. O ganho mais importante está nas ondas: das 20 cidades que o LightGBM apontou a cada ano como mais prováveis de ter uma onda, 37\% de fato a tiveram, contra 15\% usando só a população. Para dimensionar esse acerto: só cerca de 47 dos 5.565 municípios têm uma onda a cada ano (0,85\%), de modo que apontar 20 cidades ao acaso acertaria menos de 1\%, e o modelo acerta mais de 40 vezes isso. O acerto fica longe de 100\% porque a maioria das ondas é passageira e depende de quem denuncia; por isso, o modelo serve para priorizar a atenção, e não para emitir alarmes certeiros.
+
+\begin{table}[!htb]
+\centering
+\caption{Desempenho dos modelos na previsão um ano à frente (média de 2016 a 2022)}
+\label{tab:validacao}
+{\renewcommand{\arraystretch}{1.15}\small
+\begin{tabular}{p{4.6cm} p{2.6cm} p{2.6cm} p{3.0cm}}
+\toprule
+\textbf{Modelo} & \textbf{Redução do erro em relação à população} & \textbf{Acerto das 50 maiores cidades} & \textbf{Acerto entre as 20 cidades apontadas para onda} \\
+\midrule
+LightGBM & 16,7\% & 66\% & 37\% \\
+Endêmico-epidêmico & 14,6\% & 63\% & 31\% \\
+Extra Trees & 11,3\% & 63\% & 31\% \\
+Só população (referência) & -- & 63\% & 15\% \\
+Fatia histórica da cidade & $-$14,7\% & 61\% & 29\% \\
+Repetir o ano anterior & $-$35,8\% & 55\% & 26\% \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{O que está associado a mais denúncias?}
+
+A visibilidade da população LGBT e a existência de um canal para denunciar. O fator mais forte foi a proporção de domicílios com casais do mesmo sexo, a melhor medida disponível da população LGBT visível: municípios um pouco acima da média nesse indicador têm 13\% mais denúncias (Tabela~\ref{tab:coef}). A densidade teve efeito parecido, e a ouvidoria municipal de direitos humanos se associou a 23\% mais denúncias. Municípios com mais pretos e pardos denunciaram 8\% menos, e Norte e Sul denunciaram menos que o Sudeste. Renda, PIB, desigualdade, homicídios, índice de política LGBT e Processo Transexualizador não mostraram relação com o volume de denúncias.
+
+\begin{table}[!htb]
+\centering
+\caption{Características associadas a mais (RR $>$ 1) ou menos (RR $<$ 1) denúncias do que o esperado para o porte do município}
+\label{tab:coef}
+{\renewcommand{\arraystretch}{1.1}\small
+\begin{tabular}{p{6.8cm} c c c}
+\toprule
+\textbf{Característica} & \textbf{RR} & \textbf{IC 95\%} & \textbf{Há efeito?} \\
+\midrule
+Casais do mesmo sexo (por desvio-padrão) & 1,13 & 1,08--1,18 & sim \\
+Densidade demográfica (por desvio-padrão) & 1,12 & 1,07--1,18 & sim \\
+População (por desvio-padrão) & 1,08 & 1,02--1,15 & sim \\
+Pretos e pardos (por desvio-padrão) & 0,92 & 0,86--0,98 & sim \\
+Tem ouvidoria de direitos humanos & 1,23 & 1,10--1,37 & sim \\
+Região Centro-Oeste (em relação ao Sudeste) & 1,36 & 1,17--1,57 & sim \\
+Região Sul & 0,72 & 0,64--0,81 & sim \\
+Região Norte & 0,58 & 0,48--0,70 & sim \\
+Renda domiciliar por pessoa & 1,01 & 0,92--1,10 & não \\
+Taxa de homicídios no ano anterior & 0,99 & 0,94--1,03 & não \\
+Índice de política LGBT (MUNIC) & 0,99 & 0,96--1,01 & não \\
+Processo Transexualizador ativo & 0,71 & 0,34--1,46 & não \\
+\bottomrule
+\multicolumn{4}{p{12cm}}{\footnotesize Modelo endêmico-epidêmico, 2012--2022. Também incluídos, sem efeito: PIB por pessoa, Gini, população de 15 a 29 anos, estrutura municipal de direitos humanos, capital e Nordeste.}
+\end{tabular}}
+\end{table}
+
+As ondas são locais. Das denúncias esperadas pelo modelo endêmico-epidêmico, 74\% vêm das características do próprio município, 26\% da inércia do seu histórico e apenas 0,3\% das cidades vizinhas. A cada ano, entre 22 e 52 municípios entraram em alerta, e uma cidade em alerta tem quase 6 vezes mais chance de voltar a ficar em alerta no ano seguinte. Supondo para 2023 o mesmo volume nacional de 2022, a maior chance de onda foi estimada para Barbacena (MG, 40\%).
+
+\subsection{Por que confiar na previsão?}
+
+Porque o modelo aprende de forma controlada, seu ganho se repete em todos os anos e ele chega às mesmas relações do modelo estatístico. O LightGBM constrói árvores de decisão uma a uma, cada nova árvore corrigindo os erros das anteriores. Nas curvas de aprendizado (Figura~\ref{fig:curvas}), o erro no treino cai continuamente, mas o erro no ano reservado para conferência cai até um ponto mínimo e depois volta a subir (até 11\% acima do mínimo): o treino é interrompido nesse ponto, o que impede que o modelo memorize o passado.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{figuras/fig5_curvas_aprendizado.pdf}
+\caption{Aprendizado do LightGBM ao longo das árvores. (a) Previsão de 2022: erro no treino (cinza tracejado) e no ano reservado para conferência (azul); a linha pontilhada marca onde o treino parou. (b) Erro de conferência acima do seu mínimo, para cada ano previsto; os círculos marcam o ponto de parada. Fonte: Disque 100 e IBGE.}
+\label{fig:curvas}
+\end{figure}
+
+Os ganhos se mantêm quando os municípios são reamostrados, e os três modelos superam a referência em todos os anos (Tabela~\ref{tab:robustez}). A vantagem do LightGBM sobre o endêmico-epidêmico é pequena (2,1 pontos), mas se repetiu em seis dos sete anos, e o ganho ficou entre 15,7\% e 17,3\% com diferentes parâmetros. Na ablação, os vizinhos acrescentam apenas 0,15 ponto, o que confirma que as ondas não se propagam. As previsões são calibradas (o modelo previu 96\% das denúncias que ocorreram) e úteis para priorizar: monitorando só 1\% dos municípios por ano, os escolhidos pelo LightGBM concentram 31\% das ondas, contra 22\% pela população (Figura~\ref{fig:calib}). Por fim, os valores SHAP mostram que o modelo, sem nenhuma hipótese prévia, aprendeu as mesmas relações da Tabela~\ref{tab:coef}: histórico acima do esperado, mais casais do mesmo sexo e maior densidade elevam a previsão. O modelo mais preciso foi também o mais rápido.
+
+\begin{table}[!htb]
+\centering
+\caption{Confiabilidade e custo dos modelos de previsão (validação de 2016 a 2022)}
+\label{tab:robustez}
+{\renewcommand{\arraystretch}{1.1}\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{5.0cm} >{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}p{2.4cm}}
+\toprule
+\textbf{Modelo} & \textbf{Redução do erro (IC 95\%)} & \textbf{Anos melhor que a referência} & \textbf{Tempo por rodada} \\
+\midrule
+LightGBM & 16,7\% (13,3--20,3) & 7 de 7 & 0,5 a 4 s \\
+Endêmico-epidêmico & 14,6\% (11,0--18,7) & 7 de 7 & 2 a 4,5 s \\
+Extra Trees & 11,3\% (6,9--15,2) & 7 de 7 & 2,5 a 6,5 s \\
+\midrule
+\textbf{Informações usadas pelo LightGBM} & \textbf{Redução média por ano} & & \\
+\midrule
+Só características do município & 14,0\% & & \\
+Só histórico da cidade & 14,1\% & & \\
+Características e histórico & 16,7\% & & \\
+Completo (com cidades vizinhas) & 16,9\% & & \\
+\bottomrule
+\multicolumn{4}{p{13cm}}{\footnotesize IC por reamostragem dos municípios (2.000 vezes). Na ablação, a redução é a média dos ganhos de cada ano, por isso o modelo completo difere 0,2 ponto da primeira parte. Tempos em computador comum, sem placa de vídeo.}
+\end{tabular}}
+\end{table}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{figuras/fig8_calibracao_captura.pdf}
+\caption{(a) Calibração: denúncias previstas e observadas, por faixa de previsão (escala log); a linha tracejada indica previsão perfeita. (b) Percentual das 332 ondas de 2016 a 2022 capturado quando se monitoram os municípios de maior risco previsto; a linha cinza indica a escolha ao acaso. Previsões fora da amostra. Fonte: Disque 100 e IBGE.}
+\label{fig:calib}
+\end{figure}
+
+\subsection{A violência contra pessoas trans é diferente?}
+
+Sim: é mais grave, mais pública e mais mal registrada. Nos períodos em que a identidade de gênero podia ser registrada, 18\% das denúncias LGBT tinham vítima trans (4.406 de 24.151). Comparando municípios no mesmo ano, essa proporção foi maior no Nordeste (chance 54\% maior que no Sudeste) e menor em cidades mais densas e com mais pretos e pardos. Os municípios alarmantes não diferem dos demais (17\% contra 19\%): as ondas atingem a comunidade LGBT como um todo.
+
+Em violações contra a vida, a chance de a vítima ser trans é 3 vezes maior, e também é maior na violência sexual (1,7) e física (1,4), na rua, e quando o agressor é desconhecido (1,7) ou profissional e agente de instituição (2,3) (Figura~\ref{fig:perfil}). Esses registros são também mais incompletos: a raça/cor falta em 30\% deles, contra 16\% nos demais. O modelo distingue os dois grupos de forma moderada (AUC de 0,71), e o LightGBM não foi melhor que a regressão logística.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.85\textwidth]{figuras/fig4_perfil_trans.pdf}
+\caption{Quanto cada característica da denúncia aumenta (à direita de 1) ou reduz (à esquerda de 1) a chance de a vítima ser trans. Quadrados cheios: efeito estatisticamente significativo ($p<0{,}05$); quadrados vazados em cinza: sem efeito. As linhas horizontais mostram o intervalo de confiança de 95\%. Fonte: Disque 100 (ONDH/MDHC).}
+\label{fig:perfil}
+\end{figure}
+
+\subsection{A decisão do STF mudou as denúncias?}
+
+Não foi possível afirmar que sim. O STF incluiu a transfobia na Lei do Racismo em 13 de junho de 2019, e o total de denúncias LGBT não mudou depois da decisão (RR 0,98; IC 95\%: 0,67--1,43). As denúncias com vítima trans caíram 48\%, mas o teste de placebo mostrou que a queda começou em fevereiro de 2019, quatro meses antes, junto com uma mudança no registro da categoria ``travesti''. Com só 13 meses de registros trans após a decisão, o efeito não pode ser medido. As mudanças administrativas, por outro lado, pesaram muito: a troca de sistema reduziu o volume em 59\%, e o novo formulário o multiplicou por 4,5.
+
+\subsection{Relação com a literatura e limitações}
+
+Os estudos citados usam o Sinan, que registra atendimentos de saúde, e este trabalho usa denúncias; por isso, os resultados são comparados pela direção, e não pelo valor. A fatia de vítimas trans no Disque 100 (18\% das denúncias LGBT) é muito maior que a do Sinan, em que pessoas trans são 1,7\% de todas as notificações de violência \cite{marinho_tomazelli_firianelli:2024}, o que mostra o peso das pessoas trans entre as vítimas LGBT. O alcance territorial também é parecido: 45,8\% dos municípios já notificaram violência contra pessoas trans no Sinan \cite{marinho_tomazelli_firianelli:2024}, e 37\% tiveram ao menos uma denúncia LGBT no Disque 100, ou seja, a maioria das cidades ainda não aparece em nenhuma das duas bases. O perfil converge: no Sinan predominam mulheres trans jovens, a violência física e o aumento da violência sexual \cite{leal_silva_lizzi:2026,marinho_tomazelli_firianelli:2024}, e aqui as vítimas trans são mais jovens e têm mais chance de sofrer violência física, sexual e contra a vida, em linha com a maior mortalidade violenta de pessoas trans jovens \cite{luis:2025}. A diferença está no agressor: no Sinan sobressaem parceiros com vínculo afetivo \cite{marinho_tomazelli_firianelli:2024}, e no Disque 100 as vítimas trans se distinguem pela violência de desconhecidos e de agentes de instituições, o que pode refletir o tipo de caso que cada canal recebe.
+
+No território, Leal et al. \cite{leal_silva_lizzi:2026} encontraram as maiores taxas no Sudeste e no Sul, com Minas Gerais entre os estados mais altos, e autocorrelação espacial fraca; os aglomerados em Minas Gerais e a contribuição quase nula dos vizinhos confirmam esse quadro no nível municipal. No mesmo estudo, 44,6\% das vítimas eram pardas, e aqui os municípios com mais pessoas pretas e pardas denunciam menos que o esperado: juntos, os dois resultados sugerem subnotificação justamente onde a violência atinge mais, embora um seja medido por pessoa e o outro por município. Como Lucca e Romero \cite{lucca_romero_sbbd:2026}, o aprendizado de máquina não superou a regressão logística ao classificar casos individuais; na previsão de contagens municipais com histórico, porém, o LightGBM superou o modelo estatístico, mostrando que a lógica da vigilância de surtos \cite{held_hohle_hofmann:2005} funciona para denúncias de violência. Diferente de Coelho et al. \cite{coelho_jiv:2025}, não projetamos o volume nacional, porque no Disque 100 ele depende de mudanças administrativas. Quanto ao STF, nenhum dos estudos revisados avaliou a decisão com dados de denúncia; o resultado nulo indica que medir seu efeito exige séries com registro estável da identidade de gênero.
+
+As conclusões têm seis limitações principais. Primeiro, o Disque 100 mede denúncias, e não a violência em si, e a subnotificação pode variar entre municípios. Segundo, o estudo é ecológico: as associações valem para municípios, e não para pessoas, e não indicam causalidade. Terceiro, a identidade trans não foi registrada entre julho de 2020 e junho de 2022, e há apenas 13 meses de registro trans após a decisão do STF. Quarto, a proporção de casais do mesmo sexo só existe no Censo de 2022, e outras variáveis censitárias foram interpoladas. Quinto, a previsão trata o volume nacional do ano seguinte como conhecido, pois ele depende de decisões administrativas. Sexto, os dados terminam em 2022, e as estimativas para 2023 ainda não foram conferidas.
+
+
+\section{Conclusão}
+\label{sec:conclusao}
+
+Este trabalho perguntou se é possível identificar e antecipar os municípios onde a violência contra pessoas LGBT, e em especial contra pessoas trans e travestis, é denunciada acima do esperado, e a resposta é sim. (i) Os 141 municípios alarmantes não estão só nos grandes centros e se agrupam em regiões, sobretudo em Minas Gerais, no Rio de Janeiro e no entorno de João Pessoa. (ii) As ondas podem ser previstas: o LightGBM foi o melhor modelo e, monitorando 1\% dos municípios, reúne quase um terço delas; denuncia-se mais onde a população LGBT é visível e há ouvidoria, e menos onde há mais pessoas pretas e pardas, o que é compatível com subnotificação. (iii) A violência contra pessoas trans é mais grave e mais pública, inclusive por agentes de instituições, e seus registros são os mais incompletos. (iv) O efeito da decisão do STF não pôde ser medido, porque as mudanças no registro pesaram mais que o marco legal. Como trabalhos futuros, propomos manter um campo estável de identidade de gênero no Disque 100, cruzar as denúncias com o Sinan e o SIM e testar a previsão com os dados de 2023 em diante.
+
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template,referencias_metodo}
+
+\end{document}
