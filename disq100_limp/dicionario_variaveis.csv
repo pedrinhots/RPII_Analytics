@@ -7,7 +7,7 @@ pos_stf;1 se cadastrada a partir de 13/06/2019 (decisão do STF, ADO 26)
 pandemia;1 se cadastrada entre mar/2020 e dez/2021
 cod_mun_ibge6;Código IBGE do município da vítima, 6 dígitos (sem verificador)
 fonte_municipio;De onde veio o município: da vítima ou do local da denúncia (2020 s1)
-trans_identificavel;1 se o layout do período permite identificar vítima trans (0 = jul/2020 a dez/2021)
+trans_identificavel;1 se o formulário do período permite identificar vítima trans (0 = jul/2020 a jun/2022)
 identidade_trans;travesti / transexual / transgenero / intersexo / nao_trans / desconhecido
 is_trans;"1 = vítima trans ou travesti; 0 = não; vazio = não identificável ou não informado"
 orientacao_sexual;homossexual / bissexual / heterossexual / outra / desconhecido

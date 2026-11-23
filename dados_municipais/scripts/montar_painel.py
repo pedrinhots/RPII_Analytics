@@ -194,7 +194,8 @@ def montar(pasta_dados, pasta_disque, pasta_saida):
     for col in ("registros_lgbt", "registros_lgbt_janela_trans", "registros_trans"):
         p[col] = p[col].fillna(0)
     # cobertura da identificação trans no ano: 1 = ano todo; 0,5 = só jan-jun/2020; 0 = 2021
-    p["cobertura_trans"] = p["ano"].map(lambda a: 0.5 if a == 2020 else 0.0 if a == 2021 else 1.0)
+    # cobertura da identificação trans no ano: 1 = ano todo; 0,5 em 2020 (jan-jun) e 2022 (jul-dez); 0 em 2021
+    p["cobertura_trans"] = p["ano"].map(lambda a: 0.5 if a in (2020, 2022) else 0.0 if a == 2021 else 1.0)
     p.loc[p["cobertura_trans"] == 0, ["registros_trans", "registros_lgbt_janela_trans"]] = np.nan
     p["prop_trans"] = p["registros_trans"] / p["registros_lgbt_janela_trans"].replace(0, np.nan)
     p["taxa_lgbt_100mil"] = p["registros_lgbt"] / p["populacao"] * 1e5
@@ -261,11 +262,11 @@ def zscore(s):
 
 DICIONARIO = {
     "registros_lgbt": "Registros (denúncia x vítima) LGBT do Disque 100 no município e ano; 0 se nenhum",
-    "registros_trans": "Registros com vítima travesti/transexual/transgênero; vazio em 2021 (não identificável)",
+    "registros_trans": "Registros com vítima travesti/transexual/transgênero; vazio em 2021; em 2020 e 2022 cobre só meio ano",
     "registros_lgbt_janela_trans": "Registros LGBT feitos em períodos em que a vítima trans era identificável (denominador de prop_trans)",
     "prop_trans": "registros_trans / registros_lgbt_janela_trans; vazio se não houve registro",
     "taxa_lgbt_100mil": "Registros LGBT por 100 mil habitantes",
-    "cobertura_trans": "Fração do ano com identificação de vítima trans: 1; 0,5 em 2020 (jan-jun); 0 em 2021",
+    "cobertura_trans": "Fração do ano com identificação de vítima trans: 1; 0,5 em 2020 (jan-jun) e 2022 (jul-dez); 0 em 2021",
     "populacao": "População: estimativas IBGE (SIDRA 6579) 2011-2021; Censo 2022 (SIDRA 4714)",
     "densidade": "hab/km²; interpolação linear entre 2010 (pop. Censo 2010 / área 2022) e 2022 (SIDRA 4714)",
     "pib_per_capita_r2022": "PIB per capita (SIDRA 5938 / população), em R$ de jul/2022 pelo IPCA",

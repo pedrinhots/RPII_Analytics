@@ -1,0 +1,21 @@
+# Python 3.14
+# Instalação: python -m pip install -r requirements.txt
+
+# Coleta, limpeza e montagem do painel
+# (versões testadas no venv do projeto; pandas fixado porque a leitura de datas
+#  em formatos mistos do Disque 100 depende da versão)
+pandas==2.3.3
+numpy==2.5.3
+requests==2.34.2
+python-calamine==0.9.1   # leitura das planilhas MUNIC/Atlas (engine="calamine")
+
+# Análises e figuras (entrega_relatorio/analises)
+scipy
+statsmodels
+scikit-learn
+lightgbm
+shap
+matplotlib
+geopandas
+libpysal
+esda

@@ -195,8 +195,8 @@ def identidade_e_orientacao(df):
     ident[b & o_2020.notna()] = "nao_trans"
     ident[b & (o_2020 == "TRAVESTI")] = "travesti"
     ident[b & (o_2020 == "TRANSEXUAL")] = "transexual"
-    # C: só é possível identificar a partir de 2022 (PESSOA TRANS.* na orientação)
-    c22 = (lay == "C_2020s2_2022") & (df["data_cadastro"] >= "2022-01-01")
+    # C: só é possível identificar a partir de jul/2022 (categoria PESSOA TRANS.* na orientação)
+    c22 = (lay == "C_2020s2_2022") & (df["data_cadastro"] >= "2022-07-01")
     ident[c22 & o_nova.notna()] = "nao_trans"
     ident[c22 & o_nova.str.contains("TRAVESTI", na=False)] = "travesti"
     ident[c22 & o_nova.str.contains("TRANSEXUAL", na=False)] = "transexual"
@@ -376,7 +376,7 @@ DICIONARIO = {
     "pandemia": "1 se cadastrada entre mar/2020 e dez/2021",
     "cod_mun_ibge6": "Código IBGE do município da vítima, 6 dígitos (sem verificador)",
     "fonte_municipio": "De onde veio o município: da vítima ou do local da denúncia (2020 s1)",
-    "trans_identificavel": "1 se o layout do período permite identificar vítima trans (0 = jul/2020 a dez/2021)",
+    "trans_identificavel": "1 se o formulário do período permite identificar vítima trans (0 = jul/2020 a jun/2022)",
     "identidade_trans": "travesti / transexual / transgenero / intersexo / nao_trans / desconhecido",
     "is_trans": "1 = vítima trans ou travesti; 0 = não; vazio = não identificável ou não informado",
     "orientacao_sexual": "homossexual / bissexual / heterossexual / outra / desconhecido",
